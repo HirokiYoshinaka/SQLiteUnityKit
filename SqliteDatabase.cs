@@ -284,7 +284,7 @@ public class SqliteDatabase
 	{
 		IntPtr stmHandle;
         
-	    	int byteCount = System.Text.Encoding.UTF8.GetByteCount(query);
+		int byteCount = System.Text.Encoding.UTF8.GetByteCount(query);
 	    
 		if (sqlite3_prepare_v2 (_connection, query, byteCount, out stmHandle, IntPtr.Zero) != SQLITE_OK) {
 			IntPtr errorMsg = sqlite3_errmsg (_connection);
