@@ -75,12 +75,16 @@ public class SqliteDatabase
 	[DllImport("sqlite3", EntryPoint = "sqlite3_column_bytes")]
 	private static extern int sqlite3_column_bytes (IntPtr stmHandle, int iCol);
 	
+	[DllImport("libsqliteX", EntryPoint = "sqlite3_exec")]
+	private static extern int sqlite3_exec(IntPtr db, string sql, IntPtr callback, IntPtr args, out IntPtr errorMessage);
+	
 	private IntPtr _connection;
 
 	private bool IsConnectionOpen { get; set; }
 	
 	private string pathDB;
 	
+	private bool IsTransaction = false;
 	
     #region Public Methods
     
@@ -170,24 +174,35 @@ public class SqliteDatabase
 	/// </exception>
 	public void ExecuteNonQuery (string query)
 	{
-		if (!CanExQuery) {
-			Debug.Log ("ERROR: Can't execute the query, verify DB origin file");
+		if (!CanExQuery)
+		{
+			Debug.Log("ERROR: Can't execute the query, verify DB origin file");
 			return;
 		}
-			
-		this.Open ();
-		if (!IsConnectionOpen) {
-			throw new SqliteException ("SQLite database is not open.");
+
+		if (!IsTransaction)
+		{
+			Open();
 		}
 
-		IntPtr stmHandle = Prepare (query);
- 
-		if (sqlite3_step (stmHandle) != SQLITE_DONE) {
-			throw new SqliteException ("Could not execute SQL statement.");
+		if (!IsConnectionOpen)
+		{
+			throw new SqliteException("SQLite database is not open.");
 		}
-        
-		Finalize (stmHandle);
-		this.Close ();
+
+		IntPtr stmHandle = Prepare(query);
+
+		if (sqlite3_step(stmHandle) != SQLITE_DONE)
+		{
+			throw new SqliteException("Could not execute SQL statement.");
+		}
+
+		Finalize(stmHandle);
+
+		if (!IsTransaction)
+		{
+			Close();
+		}
 	}
 	
 	/// <summary>
@@ -276,6 +291,66 @@ public class SqliteDatabase
 		}
 	}
     
+	/// <summary>
+	/// Start a new transaction.
+	/// </summary>
+	public void TransactionStart()
+	{
+		Open();
+
+		IsTransaction = true;
+		ExecuteQueryExec("BEGIN");
+	}
+
+	/// <summary>
+	/// Commits the current transaction, making its changes permanent.
+	/// </summary>
+	public void TransactionCommit()
+	{
+		ExecuteQueryExec("COMMIT");
+
+		IsTransaction = false;
+		Close();
+	}
+
+	/// <summary>
+	/// Rolls back the current transaction, canceling its changes.
+	/// </summary>
+	public void TransactionRollBack()
+	{
+		ExecuteQueryExec("ROLLBACK");
+		Close();
+	}
+
+	/// <summary>
+	/// Executes a transaction query.
+	/// </summary>
+	/// <param name="query">Query.</param>
+	/// <exception cref='SqliteException'>
+	/// Is thrown when the sqlite exception.
+	/// </exception>
+	private void ExecuteQueryExec(string query)
+	{
+		IntPtr stmHandle;
+
+		if (!CanExQuery)
+		{
+			Debug.Log("ERROR: Can't execute the query, verify DB origin file");
+			return;
+		}
+
+		if (!IsTransaction)
+		{
+			Debug.Log("ERROR: Haven't started a transaction.");
+			return;
+		}
+
+		if (sqlite3_exec(_connection, query, IntPtr.Zero, IntPtr.Zero, out stmHandle) != SQLITE_OK)
+		{
+			throw new SqliteException("Could not execute SQL statement.");
+		}
+	}
+
     #endregion
     
     #region Private Methods

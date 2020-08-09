@@ -11,6 +11,12 @@ Framework to connect to SQLite database from Unity for iOS, Android, MAC and Win
 * sqlite libs version for android (v3.3.17) It has been compiled with the android native development kit release 9 and the target arm is ARMv5TE (which should cover most android devices).
 * change all DllImport from internal to private
 
+###v 1.2 changes:
+* マルチバイト文字の対応
+* SQLiteKit の DB ファイルの置換条件
+* トランザクション機能追加
+
+参考: https://shikaku-sh.hatenablog.com/entry/unity-sqliteunitykit-correction-points
 
 
 ###How to Use:
