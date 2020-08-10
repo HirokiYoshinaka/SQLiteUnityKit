@@ -75,7 +75,7 @@ public class SqliteDatabase
 	[DllImport("sqlite3", EntryPoint = "sqlite3_column_bytes")]
 	private static extern int sqlite3_column_bytes (IntPtr stmHandle, int iCol);
 	
-	[DllImport("libsqliteX", EntryPoint = "sqlite3_exec")]
+	[DllImport("sqlite3", EntryPoint = "sqlite3_exec")]
 	private static extern int sqlite3_exec(IntPtr db, string sql, IntPtr callback, IntPtr args, out IntPtr errorMessage);
 	
 	private IntPtr _connection;
