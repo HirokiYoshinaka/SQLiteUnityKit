@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
+// テーブルから取り出した1レコード
 public class DataRow : Dictionary<string,object> {
     public new object this[string column] {
         get {
@@ -21,6 +22,7 @@ public class DataRow : Dictionary<string,object> {
     }
 }
 
+// テーブル
 public class DataTable {
     public DataTable() {
         Columns = new List<string>();

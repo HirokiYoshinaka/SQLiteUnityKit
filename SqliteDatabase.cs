@@ -158,6 +158,7 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Executes a Update, Delete, etc  query.
+    /// 更新、削除などのクエリを実行します。
     /// </summary>
     /// <param name='query'>
     /// Query.
@@ -194,9 +195,11 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Executes a query that requires a response (SELECT, etc).
+    /// 応答を必要とするクエリを実行します（SELECTなど）。
     /// </summary>
     /// <returns>
     /// Dictionary with the response data
+    /// 実行結果は辞書型で返されます
     /// </returns>
     /// <param name='query'>
     /// Query.
@@ -278,6 +281,7 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Start a new transaction.
+    /// 新しいトランザクションを開始します。
     /// </summary>
     public void TransactionStart() {
         Open();
@@ -288,6 +292,7 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Commits the current transaction, making its changes permanent.
+    /// 現在のトランザクションをコミットし、変更を永続的に(確定)します。
     /// </summary>
     public void TransactionCommit() {
         ExecuteQueryExec("COMMIT");
@@ -298,6 +303,7 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Rolls back the current transaction, canceling its changes.
+    /// 現在のトランザクションをロールバックし、変更をキャンセルします。
     /// </summary>
     public void TransactionRollBack() {
         ExecuteQueryExec("ROLLBACK");
@@ -306,6 +312,7 @@ public class SqliteDatabase {
 
     /// <summary>
     /// Executes a transaction query.
+    /// トランザクションクエリを実行します。
     /// </summary>
     /// <param name="query">Query.</param>
     /// <exception cref='SqliteException'>
