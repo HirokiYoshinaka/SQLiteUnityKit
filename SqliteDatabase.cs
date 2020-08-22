@@ -1,3 +1,6 @@
+// CS0618: 'WWW' is obsolete: 'Use UnityWebRequest, a fully featured replacement which is more efficient and has additional features'
+#pragma warning disable 0618
+
 using System;
 using System.Runtime.InteropServices;
 using System.Collections;
